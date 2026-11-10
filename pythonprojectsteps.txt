@@ -1,9 +1,9 @@
 Create venv
-Python –m venv .venv
+python3 –m venv ltivenv
 #activate
-.venv\Scripts\activate
+.ltienv\Scripts\activate
 If it is bash shell in github codespaces
-source venv/bin/activate
+source ltienv/bin/activate
 Ctrl+shift+p open folder for specific
 #install dependencies from pyproject.toml
 pip install -e .
