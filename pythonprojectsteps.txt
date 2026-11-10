@@ -1,5 +1,5 @@
 Create venv
-python3 –m venv ltivenv
+python3 –m venv ltienv
 #activate
 .ltienv\Scripts\activate
 If it is bash shell in github codespaces
