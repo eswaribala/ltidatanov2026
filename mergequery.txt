@@ -1,0 +1,29 @@
+# Step 1: Select catalog and schema
+spark.sql("USE CATALOG ltmcatalog")
+#spark.sql("USE SCHEMA default")
+
+# Step 2: Create temporary view
+spark.sql("""
+CREATE OR REPLACE TEMP VIEW silver_view AS
+SELECT
+    order_id,
+    city,
+    restaurant,
+    quantity,
+    unit_price,
+    status,
+    TO_DATE(order_date) AS order_date
+FROM VALUES
+    (101, 'Bangalore', 'Spice Hub', 2, 220.0, 'Delivered', '2026-11-01'),
+    (102, 'Erode', 'Cafe Cloud', 1, 180.0, 'Delivered', '2026-11-01'),
+    (103, 'Trichy', 'Spice Hub', 1, 180.0, 'Cancelled', '2026-11-01')
+AS V (
+    order_id,
+    city,
+    restaurant,
+    quantity,
+    unit_price,
+    status,
+    order_date
+)
+""")
