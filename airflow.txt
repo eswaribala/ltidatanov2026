@@ -1,2 +1,2 @@
-docker compose exec airflow-webserver airflow users list
-docker compose exec airflow-webserver airflow users reset-password --username airflow --password 'Admin@12345'
+docker  exec airflow-webserver airflow users list
+docker  exec airflow-webserver airflow users reset-password --username airflow --password 'Admin@12345'
