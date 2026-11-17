@@ -1,0 +1,15 @@
+{
+	"name": "adf-day5-eswari-1970",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ca56331d-c6bc-4a13-b55a-caf18ee3685e",
+		"tenantId": "b004a8b0-87e2-43c3-9940-c62feee15ff9"
+	}
+}
