@@ -1,0 +1,58 @@
+groups:
+  - name: shop-alerts
+    rules:
+      - alert: ShopHighErrorRate
+        expr: |
+          sum(rate(http_server_requests_total{env="lab",service="frontend",status=~"5.."}[1m]))
+          /
+          sum(rate(http_server_requests_total{env="lab",service="frontend"}[1m])) > 0.03
+        for: 1m
+        labels:
+          severity: critical
+          service: frontend
+        annotations:
+          summary: "More than 3% of shop requests fail ({{ $value | humanizePercentage }})"
+          runbook: "RB-SHOP-001: check the error panels by route, then traces of failed requests"
+
+      - alert: CheckoutLatencyHigh
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{env="lab",service="frontend",route="/api/checkout"}[1m]))) > 1
+        for: 1m
+        labels:
+          severity: warning
+          service: frontend
+        annotations:
+          summary: "Checkout p95 latency is {{ $value | humanizeDuration }}"
+          runbook: "RB-SHOP-002: open slow checkout traces and find the slowest child span"
+
+      - alert: DbPoolSaturated
+        expr: |
+          max by (service) (db_pool_connections_active{env="lab"} / db_pool_connections_max{env="lab"}) >= 1
+          and max by (service) (db_pool_pending_threads{env="lab"}) > 5
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "DB connection pool of {{ $labels.service }} is exhausted"
+          runbook: "RB-DB-003: check slow queries and pool size; scale or restart only after evidence"
+
+      - alert: PaymentLatencyHigh
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{env="lab",service="payment"}[1m]))) > 1
+        for: 1m
+        labels:
+          severity: warning
+          service: payment
+        annotations:
+          summary: "Payment provider p95 latency is {{ $value | humanizeDuration }}"
+          runbook: "RB-PAY-004: check PSP status page; consider failover provider"
+
+      - alert: ShopSimDown
+        expr: up{job="shopsim"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: shopsim
+        annotations:
+          summary: "ShopSim metrics endpoint is down"
+          runbook: "RB-SHOP-000: docker compose ps; docker compose logs shopsim"
