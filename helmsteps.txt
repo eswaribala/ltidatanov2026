@@ -1,0 +1,28 @@
+Step 1: Update Ubuntu
+sudo apt update
+sudo apt install -y curl
+
+
+Step 2: Download the official Helm installation script
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+
+
+Step 3: Install Helm
+chmod 700 get_helm.sh
+./get_helm.sh
+
+
+This installs Helm using the official installation script. 
+Helm
+
+Step 4: Verify installation
+helm version
+
+
+Check the available commands:
+helm help
+
+
+Step 5: Verify Kubernetes connectivity
+kubectl cluster-info
+kubectl get nodes
