@@ -1,0 +1,22 @@
+Step 1: Copy your dataset into the Splunk container
+Run these commands from your current terminal:
+cd ~/obs-lab/day3
+
+docker exec splunk mkdir -p /tmp/day3
+
+docker cp . splunk:/tmp/day3/
+
+
+Step 2: Verify copied files
+docker exec splunk ls -l /tmp/day3
+
+
+You should see your load-day3.sh, log files, JSON files, and CSV files.
+Step 3: Execute the script inside Docker
+Run this single command from Ubuntu:
+docker exec -it \
+  -u splunk \
+  -w /tmp/day3 \
+  -e SPLUNK_HOME=/opt/splunk \
+  -e SPLUNK_AUTH="$SPLUNK_AUTH" \
+  splunk bash ./load-day3.sh
