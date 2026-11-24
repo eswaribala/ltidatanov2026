@@ -18,7 +18,38 @@ wget https://raw.githubusercontent.com/grafana/loki/v3.7.0/cmd/loki/loki-local-c
 Verify the file:
 ls -l
 
+create loki-config.yaml
+add the following
+auth_enabled: false
 
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+analytics:
+  reporting_enabled: false
 
 Step 4: Create docker-compose.yml
 
