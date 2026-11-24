@@ -1,0 +1,61 @@
+Step 1: Verify Docker installation
+docker --version
+docker compose version
+
+
+Step 2: Create a project directory
+mkdir -p ~/loki-lab
+cd ~/loki-lab
+
+
+Step 3: Download Loki configuration
+Download the official Loki configuration for version 3.7.0. 
+Grafana Loki documentation
+
+wget https://raw.githubusercontent.com/grafana/loki/v3.7.0/cmd/loki/loki-local-config.yaml -O loki-config.yaml
+
+
+Verify the file:
+ls -l
+
+
+Step 4: Create docker-compose.yml
+nano docker-compose.yml
+
+
+Paste the following complete configuration:
+services:
+  loki:
+    image: grafana/loki:3.7.0
+    container_name: loki
+    ports:
+      - "127.0.0.1:3100:3100"
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki_data:/tmp/loki
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - loki
+    restart: unless-stopped
+
+volumes:
+  loki_data:
+  grafana_data:
+
+
+Save using Ctrl+O → Enter → Ctrl+X.
+Step 5: Start the containers
+docker compose up -d
+
+
+Verify:
+docker compose ps
