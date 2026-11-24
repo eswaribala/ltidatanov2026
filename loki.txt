@@ -19,7 +19,15 @@ Verify the file:
 ls -l
 
 
+
 Step 4: Create docker-compose.yml
+
+mkdir -p loki-data
+sudo chown -R 10001:10001 loki-data
+sudo chmod -R 755 loki-data
+
+
+
 nano docker-compose.yml
 
 
@@ -28,24 +36,16 @@ services:
   loki:
     image: grafana/loki:3.7.0
     container_name: loki
+    user: "10001:10001"
     ports:
       - "127.0.0.1:3100:3100"
     command: -config.file=/etc/loki/loki-config.yaml
     volumes:
       - ./loki-config.yaml:/etc/loki/loki-config.yaml:ro
-      - loki_data:/tmp/loki
+      - ./loki-data:/tmp/loki
     restart: unless-stopped
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-    depends_on:
-      - loki
-    restart: unless-stopped
+  
 
 volumes:
   loki_data:
